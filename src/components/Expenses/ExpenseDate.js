@@ -3,19 +3,11 @@ import React from "react";
 import "./ExpenseDate.css";
 
 const ExpenseDate = (props) => {
-  // const month = props.date.toLocaleString("en-US", { month: "long" });
-  // const day = props.date.toLocaleString("en-US", { day: "2-digit" });
+  const unixTime = props.date;
+  const date = new Date(unixTime * 1000);
+  const month = date.toLocaleString("en-US", { month: "long" });
+  const day = date.toLocaleString("en-US", { day: "2-digit" });
   const year = props.date.toDate().getFullYear();
-
-  const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
-    props.date
-  );
-  const day = new Intl.DateTimeFormat("en-US", { day: "2-digit" }).format(
-    props.date
-  );
-  // const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
-  //   props.date
-  // );
 
   return (
     <div className="expense-date">

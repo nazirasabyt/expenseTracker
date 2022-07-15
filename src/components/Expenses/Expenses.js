@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase";
-import {
-  collection,
-  onSnapshot,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 import ExpensesFilter from "./ExpensesFilter";
 import ExpenseItem from "./ExpenseItem";
@@ -17,7 +11,6 @@ import "./Expenses.css";
 const Expenses = (props) => {
   const [expenses, setExpenses] = useState([]);
   const [filteredYear, setFilteredYear] = useState("2020");
-  const recipesRef = collection(db, "recipes");
 
   const filterChangeHandler = (selectedYear) => {
     setFilteredYear(selectedYear);
@@ -41,39 +34,9 @@ const Expenses = (props) => {
     };
   }, []);
 
-  // const filteredExpenses = expenses.filter((expense) => {
-  //   return expense.date.getFullYear().toString() === filteredYear;
-  // });
-
-  const filteredExpenses = async () => {
-    const year = expenses.date.getFullYear().toString();
-    console.log(year);
-    const q = query(recipesRef, where("date", "==", filteredYear));
-    const querySnapshot = await getDocs(q);
-    let list = [];
-    querySnapshot.forEach((doc) => {
-      list.push({ id: doc.id, ...doc.data() });
-    });
-  };
-
-  // useEffect(() => {
-  //   try {
-  //     const fetchData = async () => {
-  //       setLoading(true);
-  //       const q = query(recipesRef, where("section", "==", "Cold Kitchen"));
-  //       const querySnapshot = await getDocs(q);
-  //       let list = [];
-  //       querySnapshot.forEach((doc) => {
-  //         list.push({ id: doc.id, ...doc.data() });
-  //       });
-  //       setSortedRecipes(list);
-  //       setLoading(false);
-  //     };
-  //     fetchData();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, []);
+  const filteredExpenses = expenses.filter((expense) => {
+    return expense.date.toDate().getFullYear().toString() === filteredYear;
+  });
 
   return (
     <div>
@@ -82,9 +45,9 @@ const Expenses = (props) => {
           selected={filteredYear}
           onChangeFilter={filterChangeHandler}
         />
-        <ExpensesChart expenses={expenses} />
+        <ExpensesChart expenses={filteredExpenses} />
         {expenses &&
-          expenses.map((expense) => {
+          filteredExpenses.map((expense) => {
             return (
               <ExpenseItem
                 key={expense.id}
